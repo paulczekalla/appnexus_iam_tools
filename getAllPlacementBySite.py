@@ -59,6 +59,7 @@ all_placement = list()
 
 defect_sites = list()
 defect_placement = list()
+cc_sites = list()
 
 
 placement_cat_checker = PlacementCategoriesChecker()
@@ -75,6 +76,7 @@ for site in sites:
             site_categories.append(category['name'])
             all_categories.add(category['name'])
             
+        cc_sites.append(site['name'])
     else:
         print("No Custom Categories")        
    
@@ -86,6 +88,7 @@ for site in sites:
                 all_placement.append(placement_cat_checker.read_in_categories(placement_full, site_categories, all_categories))
             else:
                 # trying to throttle
+                print('Defect placement. Going to sleep...')
                 time.sleep(30)
                 
                 # if same thing happens again, than we have to look deeper
@@ -93,6 +96,7 @@ for site in sites:
                 if placement_full is not None:
                     all_placement.append(placement_cat_checker.read_in_categories(placement_full, site_categories, all_categories))
                 else:
+                    print('Placement still defect. Going to next placement.')
                     defect_placement.append(placement_site['id'])
     else:
         defect_sites.append(site['name'])
@@ -139,3 +143,6 @@ print(defect_sites)
 
 print('Defect Placements: ')
 print(defect_placement)
+
+print('CC Sites: ')
+print(cc_sites)
