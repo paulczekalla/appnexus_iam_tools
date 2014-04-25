@@ -1,0 +1,9 @@
+# Aggregiert von allen Buyern ihre Anzahl von Geboten + Bietpreis
+# Spalten: Buyer_id, Gebote, Durchschnittspreis
+stats = bid01.groupby('buyer_member_id').agg({'actual_bid_price': [np.size, np.mean]})
+
+# Worst Bieter (Spalten: Buyer_id, Gebote, Durchschnittspreis)
+print stats.sort([('actual_bid_price', 'mean')], ascending=True).head()
+
+# Top Bieter (Spalten: Gebote, Durchschnittspreis)
+print stats.sort([('actual_bid_price', 'mean')], ascending=False).head()

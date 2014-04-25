@@ -1,0 +1,5 @@
+import pandas as pd
+columns = ['DATE_TIME', 'AUCTION_ID_64', 'USER_ID_64', 'BRAND_ID', 'CREATIVE_ID', 'ACTUAL_BID_PRICE', 'BIASED_BID_PRICE', 'BID_REJECT_REASON', 'YM_FLOOR_ID', 'YM_BIAS_ID', 'BIDDER_ID', 'BUYER_MEMBER_ID', 'SELLER_MEMBER_ID', 'TOTAL_BID_MODIFIER']
+bid01 = pd.read_csv('bid_landscape_feed_2014_04_07_09_20140407104511_0.csv', names=columns, sep='\t')
+buy1437 = bid01[bid01.BUYER_MEMBER_ID == 1437]
+buy1437.to_csv('vivaki_2014_04_07_09.csv')
