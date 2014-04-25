@@ -36,17 +36,18 @@ proxies = {
   "https": "http://proxy.t-online.net:3128",
 }
 
+DEFAULT_RESULT_FOLDER = 'results'
+filename = "all_site_ALL_categories.csv"
+
 http = HttpHandler("http://api.appnexus.com")
 
 a = Auth()
 
 aquireAuthToken(a, http)
 
-filename = "all_site_ALL_categories.csv"
-
 worker = AbstractGenericWorker(http)
-#sites = worker.getAllEntitiesByType('site')
-sites = worker.getAllEntitiesByRange('site', 300, 400)
+sites = worker.getAllEntitiesByType('site')
+#sites = worker.getAllEntitiesByRange('site', 0, 100)
 
 writer_content = list()
 
@@ -63,7 +64,6 @@ defect_placement = list()
 placement_cat_checker = PlacementCategoriesChecker()
 
 for site in sites:
-    #time.sleep(3)
     print(str(i) + ' / ' + str(count))
 
     print('Working on site:' + site['name'])
@@ -83,22 +83,17 @@ for site in sites:
             placement_full = getPlacement(placement_site['id'])
             
             if placement_full is not None:
-                
                 all_placement.append(placement_cat_checker.read_in_categories(placement_full, site_categories, all_categories))
-
-
-                #placement_cat_list = copy.deepcopy(site_categories)                
-                #if placement_full['content_categories'] is not None:
-                    #for placement_cat in placement_full['content_categories']:
-                        #placement_cat_list.append(placement_cat['name'])
-                        #all_categories.add(placement_cat['name'])
-                        
-                #all_placement.append(Placement(placement_full['id'], placement_full['name'], placement_full['code'], placement_full['publisher_name'], placement_full['site_name'], placement_full['default_referrer_url'], placement_cat_list))
-
-
             else:
-                defect_placement.append(placement_site['id'])
-    
+                # trying to throttle
+                time.sleep(30)
+                
+                # if same thing happens again, than we have to look deeper
+                placement_full = getPlacement(placement_site['id'])
+                if placement_full is not None:
+                    all_placement.append(placement_cat_checker.read_in_categories(placement_full, site_categories, all_categories))
+                else:
+                    defect_placement.append(placement_site['id'])
     else:
         defect_sites.append(site['name'])
     
@@ -131,7 +126,8 @@ for placement in all_placement:
     writer_content.append(writer_string)
 
 
-fw = FileWriter(filename, 'w')
+
+fw = FileWriter(filename, 'w', DEFAULT_RESULT_FOLDER)
 
 for line in writer_content:
     fw.writeInNewFile(line)
