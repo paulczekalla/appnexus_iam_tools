@@ -11,7 +11,7 @@ class FileWriter:
     def generatefileInstanceWithNewFile(self):
         filename = self.generateFilename()
         if self._default_folder is not None:
-            return open(self._default_folder + '/' + filename, self._fileRights)
+            return open(self._default_folder + '/' + filename, self._fileRights, newline='\n')
         else:
             return open(filename, self._fileRights)
 
