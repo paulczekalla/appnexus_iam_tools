@@ -35,7 +35,7 @@ class FileWriter:
         fileContent = fileContent.decode('utf-8')
 
         try:
-            self.fileInstance.write(fc)
+            self.fileInstance.write(fileContent)
         except:
             print("Error occured while writing into file")
             self.closeFile()
