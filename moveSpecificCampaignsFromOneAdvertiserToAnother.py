@@ -33,7 +33,7 @@ proxies = {
 
 filename = "all_profiles.csv"
 
-http = HttpHandler(proxies, "http://api.appnexus.com")
+http = HttpHandler("http://api.appnexus.com", proxies)
 
 a = Auth()
 
