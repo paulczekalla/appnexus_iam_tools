@@ -11,7 +11,7 @@ class Auth:
             self._username = username
         else:
             config = configparser.ConfigParser()
-            print(config.read(CREDENTIAL_FILE))
+            config.read(CREDENTIAL_FILE)
             
             self._username = config['appnexus-read-write']['appnexus_username']
             self._password = config['appnexus-read-write']['appnexus_password']
@@ -26,7 +26,6 @@ class Auth:
         self._http = None
         self._auth_data = None
         self.createCredentialJson()
-
         
     def __str__(self):
         return "Login: " + self._username + "\nPassword: " + self._password
@@ -76,6 +75,20 @@ class Auth:
                 time.sleep(15)
                 self.readResponse(self.authorizationRequest())
 
+    def aquireAuthToken(self, http):
+        self._http = http
+        token = ""
+        try:
+            token = self.readResponse(self.authorizationRequest(self._http))
+        except AuthException as e:
+            print("Login mit Zugang {} nicht moeglich.".format(e.login))
+            #print("Zugangsdaten erneut eingeben: ")
+            #login = input("Login: ")
+            #password = input("Passwort: ")
+            #aquireAuthToken(Auth(login, password), http)
+        else:
+            self._http.setToken(token)
+       
 
 # Import was kinda broken, so this Exception-class is (now) part of this file
 class AuthException(Exception):

@@ -4,19 +4,6 @@ from lib.auth import Auth, AuthException
 from lib.httpHandler import HttpHandler
 from lib.fileWriter2 import FileWriter
 
-def aquireAuthToken(authObj, http):
-    token = ""
-    try:
-        token = authObj.readResponse(authObj.authorizationRequest(http))
-    except AuthException as e:
-        print("Login mit Zugang {} nicht moeglich.".format(e.login))
-        print("Zugangsdaten erneut eingeben: ")
-        login = input("Login: ")
-        password = input("Passwort: ")
-        aquireAuthToken(Auth(login, password), http)
-    else:
-        http.setToken(token)
-
 proxies = {
   "http": "http://proxy.t-online.net:3128",
   "https": "http://proxy.t-online.net:3128",
@@ -25,10 +12,10 @@ proxies = {
 
 http = HttpHandler("http://api.appnexus.com")
 a = Auth()
-aquireAuthToken(a, http)
+a.aquireAuthToken(http)
 
-start_value = "2014-04-27 00:00:00"
-end_value = "2014-04-28 00:00:00"
+start_value = "2014-04-28 00:00:00"
+end_value = "2014-04-29 00:00:00"
 
 
 # Auswahl des Report-Types sowie der Dimensionen und Metriken
