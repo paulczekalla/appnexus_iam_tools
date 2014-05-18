@@ -36,4 +36,39 @@ class AbstractGenericWorker:
 		return allEntities
 
 	def getAllEntitiesBySearchTerm(self, type, searchterm):
-		pass
+
+		params = {'search':searchterm}
+
+		firstReturn = self.http.getRequest(type, params).json()['response']
+		count = firstReturn['count']
+		
+		allEntities = list()
+		# very ugly hack with the add of the letter s
+		# for later versions maybe a dict with every plural version
+		allEntities.extend(firstReturn[type+'s'])
+		
+		if count > 100:
+			for cur_start_element in range(100, count, 100):
+				# again this plural s implementation 
+				allEntities.extend(self.http.getRequestPage(cur_start_element, type, params).json()['response'][type+'s'])
+		
+		return allEntities
+
+	def getAllEntitiesRunOnOrAfterADate(self, type, first_run_date):
+
+		params = {'min_first_run':first_run_date, 'flight_info':'true'}
+
+		firstReturn = self.http.getRequest(type, params).json()['response']
+		count = firstReturn['count']
+		
+		allEntities = list()
+		# very ugly hack with the add of the letter s
+		# for later versions maybe a dict with every plural version
+		allEntities.extend(firstReturn[type+'s'])
+		
+		if count > 100:
+			for cur_start_element in range(100, count, 100):
+				# again this plural s implementation 
+				allEntities.extend(self.http.getRequestPage(cur_start_element, type, params).json()['response'][type+'s'])
+		
+		return allEntities
