@@ -34,3 +34,6 @@ class AbstractGenericWorker:
 				allEntities.extend(self.http.getRequestPage(cur_start_element, type).json()['response'][type+'s'])
 		
 		return allEntities
+
+	def getAllEntitiesBySearchTerm(self, type, searchterm):
+		pass

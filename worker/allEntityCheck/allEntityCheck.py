@@ -1,6 +1,3 @@
-import time
-import datetime
-
 class AllEntityCheck:
 	def __init__(self):
 		print("All Entity Check instance created")
