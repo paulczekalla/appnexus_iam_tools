@@ -1,0 +1,32 @@
+
+def construct_payload(pub_id, pub_name, code, w_size, ):
+
+    creative:{
+    "w_size" = creative['w_size']
+    "h_size" = creative['h_size']
+    "content" = creative['content']
+
+    payload = {"creative":{
+    "state":"active",
+    "advertiser_id":"311018",
+    "format":"iframe-html",
+    "width":w_size,
+    "height":h_size,
+    "no_iframes":false,
+    "content":content,
+    "original_content":content,
+    "track_clicks":"true",
+    "template":{
+    "id":"7",
+    "name":"Standard",
+    "media_subtype_id":"1",
+    "format_id":"7"
+    },
+    "media_subtypes":[
+    "banner"
+    ],
+    "click_action":"click-to-web",
+    "content_source":"standard"
+    }
+    }
+
