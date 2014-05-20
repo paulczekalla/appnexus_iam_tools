@@ -27,8 +27,8 @@ def testMinRunDate(http, date):
 
 def testSapNumber(http, searchterm):
     basicCapaignWorker = BasicCampaignWorker()
-
     testClass = AbstractGenericWorker(http)
+    
     campaigns = testClass.getAllEntitiesBySearchTerm('campaign', searchterm)
     
     for campaign in campaigns:
