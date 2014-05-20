@@ -4,13 +4,11 @@ from lib.auth import Auth, AuthException
 from lib.httpHandler import HttpHandler
 from lib.fileWriter2 import FileWriter
 
-proxies = {
-  "http": "http://proxy.t-online.net:3128",
-  "https": "http://proxy.t-online.net:3128",
-}
-
 
 def main():
+
+    REPORTING_FOLDER = 'appnexus_reports'
+    REPORT_FILENAME = 'appnexus_analytics_report.csv'
 
     http = HttpHandler("http://api.appnexus.com")
     a = Auth()
@@ -70,7 +68,7 @@ def main():
                 filedownload = downloadURL['report']['url']
                 print(filedownload)
                 downloadedReport = http.getRequest(filedownload)
-                fileWriter = FileWriter("new_report.csv", "w")
+                fileWriter = FileWriter(REPORT_FILENAME, "w", REPORTING_FOLDER)
                 fileWriter.writeReportInNewFile(downloadedReport.content)
                 report_download_done = True
 
