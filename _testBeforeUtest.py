@@ -16,7 +16,8 @@ def main():
     #testSearch(http, 'adidas')
     #testMinRunDate(http, '2014-05-01+00:00:00')
     #testSapNumber(http, 'adidas')
-    testGetProfile(http, 'adidas')
+    #testGetProfile(http, 'adidas')
+    testGetSpecificRegioTarget(http, 3961329)
 
 # not real tests, just preparation
 def testSearch(http, searchterm):
@@ -43,6 +44,18 @@ def testGetProfile(http, searchterm):
         print(profile.profile_id)
         print(profile.country_targets)
 
+
+def testGetSpecificRegioTarget(http, campaign_id):
+    params = {'id':str(campaign_id)}
+    campaign = http.getRequest('campaign', params).json()['response']['campaign']
+        
+    testClass = AbstractGenericWorker(http)
+    profile = testClass.getProfileFromEntity(campaign)
+
+    camp_profile = Profile(profile['id'], profile['country_targets'], profile['region_targets'], profile['city_targets'], profile['segment_group_targets'])
+    for city in camp_profile.city_targets:
+        print(city['name'])
+    
 
 def testSapNumber(http, searchterm):
     basicCapaignWorker = BasicCampaignWorker()
