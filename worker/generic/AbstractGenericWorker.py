@@ -63,9 +63,20 @@ class AbstractGenericWorker:
 
 	def getAllEntitiesBySearchTerm(self, type, searchterm):
 		params = {'search':searchterm}
-		self.getAllEntitiesFiltered(type, params)
+		return self.getAllEntitiesFiltered(type, params)
 
 
 	def getAllEntitiesRunOnOrAfterADate(self, type, first_run_date):
 		params = {'min_first_run':first_run_date, 'flight_info':'true'}
-		self.getAllEntitiesFiltered(type, params)
+		return self.getAllEntitiesFiltered(type, params)
+
+
+	def getProfileFromEntity(self, entity):
+		if entity['profile_id'] is not None:
+			profile_id = entity['profile_id']
+			params = {'id':str(profile_id)}
+			
+			return self._http.getRequest('profile', params).json()['response']['profile']
+
+		else:
+			print('Invalid Entity - No profile provided')
