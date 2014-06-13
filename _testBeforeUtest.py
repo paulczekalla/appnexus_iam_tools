@@ -1,5 +1,7 @@
 ﻿import json
 import time
+import copy
+from random import shuffle
 from lib.auth import Auth, AuthException
 from lib.httpHandler import HttpHandler
 from lib.fileWriter2 import FileWriter
@@ -12,14 +14,61 @@ def main():
     http = HttpHandler("http://api.appnexus.com")
     a = Auth()
     a.aquireAuthToken(http)
-
+    countAllValidEntities(http, 'placement', 'mobil')
     #testSearch(http, 'adidas')
     #testMinRunDate(http, '2014-05-01+00:00:00')
     #testSapNumber(http, 'adidas')
     #testGetProfile(http, 'adidas')
-    testGetSpecificRegioTarget(http, 3961329)
+    #testGetSpecificRegioTarget(http, 3961329)
 
 # not real tests, just preparation
+
+def countAllValidEntities(http, entity, invalid_value):
+    testClass = AbstractGenericWorker(http)
+    allEntities = testClass.getAllEntitiesByRange(entity, 6000, 6199)
+    #allEntities = testClass.getAllEntitiesByType(entity)
+    
+    count = 0
+    all_placements = list()
+    
+    placements = list()
+    for entity in allEntities:    
+        if invalid_value not in entity['publisher_name']:
+            placements.append({'id':entity['id']})
+            count = count + 1
+            if count == 100:
+                all_placements.append(copy.deepcopy(placements))
+                placements = list()
+                count = 0
+    
+    shuffle(all_placements)
+    
+    count = 1
+    for places in all_placements:
+        construct_deal(http, places, count)
+        count = count + 1
+        print('######')
+
+def construct_deal(http, placement_ids, number):
+    
+    print(placement_ids)
+    params_profile = {'profile':{'placement_targets':placement_ids}}
+    
+    response = http.postRequest(params_profile, 'profile').json()['response']
+    print(response)
+    profile = response['profile']
+
+    print(profile['id'])
+    #params = {'deal':{'name':'PerformaceAdvertising - Transparency Deal '+str(number), 'active':'true', 'floor_price':'1.0', 'currency':'EUR', 'buyer':{'id':'1200'}, 'type':{'id':'1'}}}
+    
+    # xp td
+    params = {'deal':{'name':'PerformanceAdvertising - Transparency Deal '+str(number), 'active':'true', 'start_date':'2014-06-13 00:00:00', 'floor_price':'1.0', 'use_deal_floor':'true', 'currency':'EUR', 'buyer':{'id':'2150'}, 'type':{'id':'1'}, 'profile_id':profile['id']}}
+    print(params)
+    response = http.postRequest(params, 'deal').json()['response']
+    print(response)
+    deal = response['deal']
+    print(deal['id'])
+
 def testSearch(http, searchterm):
     testClass = AbstractGenericWorker(http)
     print('Campaigns fetched: ' + str(len(testClass.getAllEntitiesBySearchTerm('campaign', searchterm))))
