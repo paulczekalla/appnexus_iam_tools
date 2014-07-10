@@ -1,5 +1,6 @@
 ﻿import json
 import os
+import sys
 from lib.auth import Auth, AuthException
 from lib.httpHandler import HttpHandler
 from worker.generic.AbstractGenericWorker import AbstractGenericWorker
@@ -11,7 +12,7 @@ def main():
     a.aquireAuthToken(http)
 
     #entity_list = ('platform-member', 'advertiser', 'line-item', 'campaign', 'publisher', 'site', 'placement')
-    entity_list = ('advertiser', 'publisher')
+    entity_list = ('creative', 'category')
 
     for entity in entity_list: 
         getEntities(http, entity)
@@ -30,11 +31,13 @@ def writeIntoFile(entities, entity_type):
     if not os.path.exists(foldername):
         os.mkdir(foldername)
     
-    with open(foldername + '/' + filename, 'w') as fw:    
+    with open(foldername + '/' + filename, 'w', encoding='utf-8') as fw:    
         fw.write('id; name\n')
 
         for entity in entities:
-            fw.write(str(entity['id']) + '; ' + entity['name'] + '\n')
+            id = str(entity['id'])
+            name = entity['name']
+            fw.write(id + '; ' + name + '\n')
 
 
 if __name__ == "__main__":
